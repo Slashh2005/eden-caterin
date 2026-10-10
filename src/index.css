@@ -1,0 +1,315 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Eden palette — taken from natural materials:
+  linen, cream paper, stone, greenery and softly aged brass.
+*/
+@layer base {
+  :root {
+    --ivory: 40 45% 95%;        /* cream paper     #F8F3EA */
+    --paper: 40 50% 97.5%;      /* warm white      #FCF9F4 */
+    --linen: 38 33% 89%;        /* soft beige      #EDE5D8 */
+    --stone: 36 20% 80%;        /* fine rules      #D6CDBF */
+    --forest: 150 30% 17%;      /* deep green      #1F3A2C */
+    --forest-deep: 150 30% 12%; /*                 #152A20 */
+    --brass: 36 30% 44%;        /* antique gold    #927652 */
+    --brass-soft: 37 30% 62%;   /*                 #BBA37F */
+    --ink: 40 8% 22%;           /* warm charcoal   #3B3833 */
+    --ink-soft: 40 6% 34%;      /*                 #5C5852 */
+
+    --background: var(--ivory);
+    --foreground: var(--ink);
+    --card: var(--paper);
+    --card-foreground: var(--ink);
+    --popover: var(--paper);
+    --popover-foreground: var(--ink);
+    --primary: var(--forest);
+    --primary-foreground: var(--ivory);
+    --secondary: var(--linen);
+    --secondary-foreground: var(--forest);
+    --muted: var(--linen);
+    --muted-foreground: var(--ink-soft);
+    --accent: var(--brass);
+    --accent-foreground: var(--paper);
+    --destructive: 6 45% 40%;
+    --destructive-foreground: var(--paper);
+    --border: var(--stone);
+    --input: var(--stone);
+    --ring: var(--brass);
+    --radius: 0px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-body font-light;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-heading font-normal text-forest;
+    letter-spacing: -0.005em;
+    line-height: 1.1;
+  }
+
+  ::selection {
+    background: hsl(var(--linen));
+    color: hsl(var(--forest));
+  }
+}
+
+@layer components {
+  /* Small spaced caps label, like a menu section heading */
+  .eyebrow {
+    @apply font-body text-[0.7rem] font-normal uppercase tracking-[0.28em] text-brass;
+  }
+
+  /* Italic serif note, used for photo captions and asides */
+  .note {
+    @apply font-heading italic text-ink-soft;
+    font-size: 1.05rem;
+  }
+
+  /* Text link with a fine brass underline; a forest line draws across on hover */
+  .text-link {
+    @apply relative inline-flex items-center gap-3 font-body text-[0.78rem] font-normal uppercase tracking-[0.2em] text-forest;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid hsl(var(--brass-soft));
+  }
+  .text-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 1px;
+    background: hsl(var(--forest));
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+  .text-link:hover::after,
+  .text-link:focus-visible::after,
+  .group:hover .text-link::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  /* Buttons: a quiet fill rises from the bottom edge on hover */
+  .btn-solid,
+  .btn-outline,
+  .btn-light {
+    @apply relative isolate inline-flex items-center justify-center overflow-hidden px-7 py-3.5 font-body text-[0.74rem] font-normal uppercase tracking-[0.22em];
+    transition: color var(--dur-hover) var(--ease-out), border-color var(--dur-hover) var(--ease-out),
+      transform var(--dur-hover) var(--ease-out);
+  }
+  .btn-solid::before,
+  .btn-outline::before,
+  .btn-light::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform var(--dur-hover) var(--ease-out);
+  }
+  .btn-solid:hover::before,
+  .btn-outline:hover::before,
+  .btn-light:hover::before,
+  .btn-solid:focus-visible::before,
+  .btn-outline:focus-visible::before,
+  .btn-light:focus-visible::before {
+    transform: scaleY(1);
+  }
+  .btn-solid:hover,
+  .btn-outline:hover,
+  .btn-light:hover {
+    transform: translateY(-1px);
+  }
+  .btn-solid {
+    background: hsl(var(--forest));
+    color: hsl(var(--ivory));
+    border: 1px solid hsl(var(--forest));
+  }
+  .btn-solid::before {
+    background: hsl(var(--forest-deep));
+  }
+  .btn-outline {
+    color: hsl(var(--forest));
+    border: 1px solid hsl(var(--forest) / 0.45);
+  }
+  .btn-outline::before {
+    background: hsl(var(--forest));
+  }
+  .btn-outline:hover,
+  .btn-outline:focus-visible {
+    color: hsl(var(--ivory));
+    border-color: hsl(var(--forest));
+  }
+  .btn-light {
+    color: hsl(var(--ivory));
+    border: 1px solid hsl(var(--ivory) / 0.6);
+  }
+  .btn-light::before {
+    background: hsl(var(--ivory));
+  }
+  .btn-light:hover,
+  .btn-light:focus-visible {
+    color: hsl(var(--forest));
+    border-color: hsl(var(--ivory));
+  }
+
+  /* Paper-style form fields: a single rule, no boxes */
+  .field-label {
+    @apply mb-1 block font-body text-[0.68rem] uppercase tracking-[0.22em] text-ink-soft;
+  }
+  .field {
+    @apply w-full bg-transparent py-2.5 font-body text-base font-light text-ink outline-none;
+    border-bottom: 1px solid hsl(var(--stone));
+    transition: border-color 0.2s ease;
+  }
+  .field:focus {
+    border-color: hsl(var(--brass));
+  }
+  .field::placeholder {
+    color: hsl(var(--ink-soft) / 0.6);
+  }
+
+  /* Photographs fill their frame */
+  .photo {
+    @apply block h-full w-full object-cover;
+    /* a light, consistent warm grade so photos from different shoots sit together */
+    filter: saturate(0.86) sepia(0.07);
+  }
+}
+
+/*
+  Motion. One easing curve and one set of timings everywhere, so the site
+  moves as a single piece. Everything here is gated on .motion-ok, which
+  index.html adds only when the visitor has not asked for reduced motion.
+*/
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-hover: 0.45s;
+  --dur-fade: 0.9s;
+  --dur-rise: 1.1s;
+  --rise: 28px;
+  --word-step: 55ms;
+}
+
+/* Words in headings rise from behind a mask; the mask leaves room for
+   descenders and italic overhang so nothing is clipped at rest. */
+.rt-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding: 0.06em 0.08em 0.14em 0;
+  margin: -0.06em -0.08em -0.14em 0;
+}
+.rt-word {
+  display: inline-block;
+}
+
+.motion-ok .page-enter {
+  animation: page-enter 0.7s var(--ease-out) both;
+}
+@keyframes page-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+.motion-ok [data-reveal="text"] .rt-word {
+  transform: translate3d(0, 110%, 0);
+  transition: transform var(--dur-rise) var(--ease-out);
+  transition-delay: calc(var(--i, 0) * var(--word-step) + var(--d, 0ms));
+}
+.motion-ok [data-reveal="text"][data-revealed] .rt-word {
+  transform: none;
+}
+
+/* Blocks of copy, buttons and captions: fade in while rising a little */
+.motion-ok [data-reveal="up"] {
+  opacity: 0;
+  transform: translate3d(0, var(--rise), 0);
+  transition: opacity var(--dur-fade) var(--ease-out) var(--d, 0ms),
+    transform var(--dur-rise) var(--ease-out) var(--d, 0ms);
+}
+/* Quiet fade with no movement, for lines and lists */
+.motion-ok [data-reveal="fade"] {
+  opacity: 0;
+  transition: opacity var(--dur-fade) var(--ease-out) var(--d, 0ms);
+}
+/* Photographs: the frame opens upward while the image settles. This runs
+   as an animation (not a resting style) so no clip remains afterwards to
+   cut off photos that deliberately hang past their column. */
+.motion-ok [data-reveal="image"] {
+  opacity: 0;
+}
+.motion-ok [data-reveal="image"][data-revealed] {
+  animation: image-in 1.3s var(--ease-out) var(--d, 0ms) backwards;
+}
+@keyframes image-in {
+  from {
+    opacity: 0;
+    clip-path: inset(10% 0 0 0);
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+  }
+}
+.motion-ok [data-reveal][data-revealed] {
+  opacity: 1;
+}
+.motion-ok [data-reveal="up"][data-revealed] {
+  transform: none;
+}
+
+/* Stagger steps for siblings that reveal together */
+[data-delay="1"] { --d: 120ms; }
+[data-delay="2"] { --d: 240ms; }
+[data-delay="3"] { --d: 360ms; }
+[data-delay="4"] { --d: 480ms; }
+
+/* Gentle parallax: images are slightly oversized inside their frame and
+   drift by --py, which MotionController sets as the page scrolls. */
+.motion-ok img[data-parallax] {
+  transform: translate3d(0, var(--py, 0px), 0) scale(1.14);
+  will-change: transform;
+}
+.motion-ok svg[data-parallax] {
+  transform: translate3d(0, var(--py, 0px), 0);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-solid,
+  .btn-outline,
+  .btn-light,
+  .btn-solid::before,
+  .btn-outline::before,
+  .btn-light::before,
+  .text-link::after {
+    transition: none;
+  }
+  .btn-solid:hover,
+  .btn-outline:hover,
+  .btn-light:hover {
+    transform: none;
+  }
+}
